@@ -1,0 +1,25 @@
+name: dia-protocol-activation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  activation:
+    runs-on: windows-2025
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Execute isolated Dia activation matrix
+        shell: pwsh
+        run: ./run-dia-activation.ps1
+      - name: Upload sanitized activation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dia-protocol-activation-evidence
+          path: ${{ runner.temp }}/evidence
+          if-no-files-found: error
+          retention-days: 1
